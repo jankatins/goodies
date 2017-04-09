@@ -8,10 +8,10 @@ compinit conda
 conda_root_dir() {
     # This works but its slow, just hard coded :)
     # ANACONDA=$(conda info | grep root | awk 'BEGIN { FS = " " } ; { print $4 }' | sed 's/^[ \t]*//;s/[ \t]*$//')
-    ANACONDA="$HOME/anaconda"
+    ANACONDA="$HOME/.binaries/miniconda3"
 }
 
-lsvirtualenvs() {
+lscondaenvs() {
     conda_root_dir
     ls $ANACONDA/envs
 }
@@ -21,25 +21,25 @@ _complete_conda_envs() {
     compadd $(ls $ANACONDA/envs)
 }
 
-rmvirtualenv() {
+rmvcondaenv() {
     conda_root_dir
     rm -rf $ANACONDA/envs/$1
 }
-compdef _complete_conda_envs rmvirtualenv
+compdef _complete_conda_envs rmvcondaenv
 
-cdvirtualenv() {
+cdcondaenv() {
     conda_root_dir
     cd $ANACONDA/envs/$1
 }
-compdef _complete_conda_envs cdvirtualenv
+compdef _complete_conda_envs cdcondaenv
 
-workon() {
+conda_workon() {
     conda_root_dir
     source $ANACONDA/bin/activate $1
 }
-compdef _complete_conda_envs workon
+compdef _complete_conda_envs conda_workon
 
-workoff() {
+conda_workoff() {
     conda_root_dir
     source $ANACONDA/bin/deactivate
 }
