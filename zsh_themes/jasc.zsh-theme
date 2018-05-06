@@ -9,20 +9,20 @@ prompt_context() {
 }
 
 environment_context() {
-  if [[ "$VIRTUAL_ENV" != "" || "$CONDA_DEFAULT_ENV" != "" ]]; then
+  if [[ "$VIRTUAL_ENV" != "" || ("$CONDA_DEFAULT_ENV" != "base" && "$CONDA_DEFAULT_ENV" != "")  ]]; then
     if [[ "$VIRTUAL_ENV" != "" ]] ; then
-	  echo -n "%{$fg[black]%}(venv:%{$fg[green]%}$(basename $VIRTUAL_ENV)%{$fg[black]%})%{$reset_color%} "
+	  echo -n "%{$reset_color%}(venv:%{$fg[green]%}$(basename $VIRTUAL_ENV)%{$reset_color%})%{$reset_color%} "
 	else
-	  echo -n "%{$fg[black]%}(conda:%{$fg[green]%}$(basename $CONDA_DEFAULT_ENV)%{$fg[black]%})%{$reset_color%} "
+	  echo -n "%{$reset_color%}(conda:%{$fg[green]%}$(basename $CONDA_DEFAULT_ENV)%{$reset_color%})%{$reset_color%} "
     fi
   fi
 }
 
 
 PROMPT=$'%{$fg[blue]%}%/%{$reset_color%} $(git_prompt_info)$(bzr_prompt_info)$(prompt_context) %{$fg[white]%}[%T]%{$reset_color%}
-$(environment_context)%{$fg_bold[black]%}λ%{$reset_color%} '
+$(environment_context)%{$bold_color%}λ%{$reset_color%} '
 
-PROMPT2="%{$fg_blod[black]%}%_λ %{$reset_color%}"
+PROMPT2="%{$bold_color%}%λ%{$reset_color%} "
 
 GIT_CB=""
 ZSH_THEME_SCM_PROMPT_PREFIX="%{$fg[green]%}["
