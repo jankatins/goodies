@@ -94,9 +94,12 @@ local -A opt_args
 
 __conda_envs(){
     local -a envs
-    envs=($( conda info -e | sed "1,2d" | cut -f1 -d' '))
+    # The second might not be totally correct but is much faster
+    # envs=($( conda info -e | sed "1,2d" | cut -f1 -d' '))
+    envs=($(ls $CONDA_PREFIX/envs))
     _describe -t envs 'conda environments' envs
 }
+
 
 __conda_packages_installed(){
     local -a installed_packages option environment additional_message
@@ -130,6 +133,7 @@ __describe_conda_package_available(){
     available_packages=($( __conda_package_available))
     _describe -t available_packages 'available packages' available_packages
 }
+
 
 __conda_existing_config_keys(){
     local -a config_keys
@@ -282,6 +286,7 @@ __conda_commands(){
         clean:'Remove unused packages and caches.'
     )
     environment=(
+        activate:'activate a conda environment'
         info:'Display information about current conda install.'
         create:'Create a new conda environment from a list of specified packages.'
         list:'List linked packages in a conda environment.'
@@ -434,6 +439,9 @@ case $state in
                       '--clone[path to (or name of) existing local environment]' \
                       '--no-default-packages[ignore create_default_packages in condarc file]' \
                       '*:packages:__magic' \
+        ;;
+    (activate)
+        _arguments -C '*:environment:__conda_envs' \
         ;;
     (install)
         _arguments -C $help_opts \
