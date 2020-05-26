@@ -2,13 +2,13 @@
 # Each component will draw itself, and hide itself if no information needs to be shown
 
 # Context: user@hostname (who am I and where am I)
-prompt_context() {
+function prompt_context() {
   if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
     echo -n "%{$fg[white]%}[%n@%m]%{$reset_color%}"
   fi
 }
 
-environment_context() {
+function environment_context() {
   if [[ "$VIRTUAL_ENV" != "" || ("$CONDA_DEFAULT_ENV" != "base" && "$CONDA_DEFAULT_ENV" != "")  ]]; then
     if [[ "$VIRTUAL_ENV" != "" ]] ; then
 	  echo -n "%{$reset_color%}(venv:%{$fg[green]%}$(basename $VIRTUAL_ENV)%{$reset_color%})%{$reset_color%} "
@@ -18,9 +18,19 @@ environment_context() {
   fi
 }
 
+function check_last_exit_code() {
+  local LAST_EXIT_CODE=$?
+  if [[ $LAST_EXIT_CODE -ne 0 ]]; then
+    local EXIT_CODE_PROMPT=' '
+    EXIT_CODE_PROMPT+="%{$fg[red]%}-%{$reset_color%}"
+    EXIT_CODE_PROMPT+="%{$fg_bold[red]%}$LAST_EXIT_CODE%{$reset_color%}"
+    EXIT_CODE_PROMPT+="%{$fg[red]%}-%{$reset_color%}"
+    echo "$EXIT_CODE_PROMPT"
+  fi
+}
 
 PROMPT=$'%{$fg[blue]%}%/%{$reset_color%} $(git_prompt_info)$(bzr_prompt_info)$(prompt_context) %{$fg[white]%}[%T]%{$reset_color%}
-$(environment_context)%{$bold_color%}λ%{$reset_color%} '
+$(environment_context)$(check_last_exit_code)%{$bold_color%}λ%{$reset_color%} '
 
 PROMPT2="%{$bold_color%}%λ%{$reset_color%} "
 
